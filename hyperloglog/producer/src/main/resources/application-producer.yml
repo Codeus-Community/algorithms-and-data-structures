@@ -1,0 +1,16 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: producer-service
+
+logging:
+  level:
+    org.codeus.hyperloglog: INFO
+
+app:
+  scheduling:
+    enabled: false
+  consumer:
+    base-url: http://localhost:8081,http://localhost:8082
