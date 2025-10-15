@@ -12,15 +12,16 @@ public class WorkStealingArrSum {
         ForkJoinPool pool = ForkJoinPool.commonPool();
         int[] arrToSum = getFilledArr(arraySize);
 
-        SumTask task = new SumTask(arrToSum, 0, arrToSum.length);
-        Long sum = pool.invoke(task);
+        //TODO Create a RecursiveTask and implement it to return a sum. Return sum in this method.
+//        Long sum = pool.invoke(someTask);
         pool.shutdown();
 
         long after = System.currentTimeMillis();
         int secondsTook = (int) (after - before) / 1000;
         System.out.println("Seconds took: " + secondsTook);
 
-        return sum;
+        //TODO Need to return the actual sum here
+        return 123L;
     }
 
 }
