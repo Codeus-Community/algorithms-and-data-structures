@@ -113,7 +113,7 @@ All services have a dedicated Spring profile. Make sure you include it in your R
 1. Start all services in order: Consumer1, Consumer2, Aggregator, Producer
 2. Observe the logs to understand the flow
 3. Run tests to ensure correctness: check `hyperloglog/e2e-test` and
-   run `org.codeus.hyperloglog.e2e_test.MainFlowE2ETest`
+   run `org.codeus.outbox.orderservice.MainFlowE2ETest`
 
 ### Extra automation
 
