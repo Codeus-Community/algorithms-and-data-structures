@@ -1,0 +1,68 @@
+version: '3.8'
+name: inbox-outbox-pattern
+
+services:
+  order-service-database:
+    image: postgres
+    container_name: order-service-database
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_DB: order-service
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - order-service:/var/lib/postgresql/data
+
+  post-order-service-database:
+    image: postgres
+    container_name: post-order-service-database
+    ports:
+      - '5433:5432'
+    environment:
+      POSTGRES_DB: post-order-service
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - post-order-service:/var/lib/postgresql/data
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: inbox-outbox-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    networks:
+      - outbox-inbox-network
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: inbox-outbox-kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - '9092:9092'
+      - '29092:29092'
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      # two listeners — one internal, one external
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://localhost:9092
+      KAFKA_LISTENERS: INTERNAL://0.0.0.0:29092,EXTERNAL://0.0.0.0:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+    networks:
+      - outbox-inbox-network
+
+networks:
+  outbox-inbox-network:
+    driver: bridge
+    name: outbox-inbox-network
+
+volumes:
+  order-service:
+    driver: local
+  post-order-service:
+    driver: local

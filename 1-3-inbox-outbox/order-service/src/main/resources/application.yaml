@@ -1,0 +1,22 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: order-service
+  liquibase:
+    enabled: false
+    change-log: classpath:liquibase/changelog.xml
+  datasource:
+    url: jdbc:postgresql://localhost:5432/order-service
+    username: postgres
+    password: postgres
+    driverClassName: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer

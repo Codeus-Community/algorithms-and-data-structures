@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="orders-1" author="Bohdan Tkachuk">
+        <sqlFile path="liquibase/sql/1-orders.sql"/>
+        <comment>Create 'orders' table to store order entities</comment>
+    </changeSet>
+
+    <changeSet id="outbox-1" author="Bohdan Tkachuk">
+        <sqlFile path="liquibase/sql/2-outbox.sql"/>
+        <comment>Create 'outbox' table for reliable event publishing (Outbox Pattern)</comment>
+    </changeSet>
+
+</databaseChangeLog>

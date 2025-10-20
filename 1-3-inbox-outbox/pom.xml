@@ -11,6 +11,12 @@
 
     <groupId>org.codeus.inbox-outbox</groupId>
     <artifactId>1-3-inbox-outbox</artifactId>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>order-service</module>
+        <module>post-order-service</module>
+    </modules>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
