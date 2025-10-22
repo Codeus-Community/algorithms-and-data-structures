@@ -51,12 +51,12 @@ It's a strategy when:
  - Golfer 🏌‍♀️ => **golfers** cache
  - GolfTournament 🏆 => **tournaments** cache
 
-## [Technologies](https://youtube.com/shorts/IL9rjdx0xuo?si=BiGSI42fuzc75edh)
+### [Technologies](https://youtube.com/shorts/IL9rjdx0xuo?si=BiGSI42fuzc75edh)
 
 - Redis => as a cache storage
 - PostgreSQL => as a system of records 
 
-## Key metrics ⚖️
+### Key metrics ⚖️
 
 1. Organizers of the tournament want to know the exact number and names of all participants (Golfers).🏌🏌‍♂️🏌‍♀️ => *write-through, read-through
 2. During the golf tournament viewers, who made a bet beforehand, want to keep up with golfers results (on which hole the golfer earn how many scores). 🏆🎫 => write-behind
@@ -64,7 +64,7 @@ It's a strategy when:
 Your task is to implement those strategies. <br>
 You will find **TODO**'s inside `/service/GolfTournamentService.java`.
 
-## Running the System
+### Running the System
 
 On the **startup** of the application, **new Tournament** with 5 players **will be created.**
 ```
@@ -85,12 +85,54 @@ This will be enough to see the results of caching.
     ├──PATCH [/tournaments/{tournamentId}/score] modify golfers progress ( add number of hole and score )
     
 ```
-## Check you implementation  ✅
+
+### Test scenarios ⚙️
+<details>
+<summary>Scenario 1 => test write-though behavior</summary>
+On startup a new Tournament will be created and golfers will be added to it using write-through strategy. <br>
+<ul>
+<li>Check tournament data in db <b>/data/tournament/fromDb</b></li>
+<li>Check tournament data in cache <b>/data/tournament/fromCache</b></li>
+</ul>
+You should see that the number of golfers, their ids and names from cache are consistent with the data from db.
+</details>
+<details>
+<summary>Scenario 2 => test write-through behavior on your own example</summary>
+<ul>
+<li>Add new tournament <b>/tournaments</b></li>
+<li>Add new golfers to new tournament <br>
+( you could not add existing golfers as they are already taking part in another tournament ) <b>/tournaments</b></li>
+</ul>
+You should see that the number of golfers, their ids and names from cache are consistent with the data from db.
+</details>
+<details>
+<summary>Scenario 3 => test read-through on your own example</summary>
+<ul>
+<li>Add new tournament <b>/tournaments</b></li>
+<li>Check that it appears in db <b>/data/tournament/fromDb</b></li>
+<li>Check that it absent in cache <b>/data/tournament/fromCache</b></li>
+<li>Use get request to <b>/tournaments/{tournamentId}</b> <br>
+This will read tournament from db and cache it</li>
+<li>Repeat steps 2 and 3 </li>
+</ul>
+You should see that the number of golfers, their ids and names from cache are consistent with the data from db.
+</details>
+<details>
+<summary>Scenario 4 => test write-behind</summary>
+<ul>
+<li>Open <b>http:localhost:8080/dashboard</b></li>
+<li>Wait while scheduler made an update to golfers scores, you will see a message in a console</li>
+<li>Pay attention how data from golfers cache will differ from the one in db</li>
+</ul>
+</details>
+
+
+### Check you implementation  ✅
 - You could open [`http://localhost:8080/dashboard`](http://localhost:8080/dashboard) where you will be able to see data which stored in the db and data which stored in tournaments and golfers caches.
 - You could open [`http://localhost:8080/swagger-ui`](http://localhost:8080/swagger-ui) where you will find `cache-sor-controller` from which you could send requests to get data from db and from cache to compare.
 
 
-## Learning sources 🤓
+### Learning sources 🤓
 - [Spring Inline Caching example](https://docs.spring.io/spring-boot-data-geode-build/1.6.x/reference/html5/guides/caching-inline.html)
 - [Spring Write-Behind Caching example](https://docs.spring.io/spring-boot-data-geode-build/1.6.x/reference/html5/guides/caching-inline-async.html)
 - [Caching Strategies and something else](https://www.enjoyalgorithms.com/tags/databases/)
