@@ -61,7 +61,7 @@ public class CacheSorService {
     }
 
     public Optional<GolferDto> getGolferFromCache(final Long golferId) {
-        String key = "golfers:" + golferId;
+        String key = "golfers::" + golferId;
         GolferDto cachedGolfer = redisGolferTemplate.opsForValue().get(key);
         if (cachedGolfer != null) {
             System.out.println("⚡️ Retrieved golfer " + cachedGolfer.name() + " from Redis");
