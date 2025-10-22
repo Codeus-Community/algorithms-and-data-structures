@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/cache_demo
+    username: codeus_user
+    password: codeus_password
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      data-source-properties:
+        timeZone: Europe/Kyiv
+  jpa:
+    hibernate:
+      ddl-auto: update
+  sql:
+    init:
+      mode: never
+  cache:
+    type: redis
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
