@@ -1,4 +1,4 @@
-package org.codeus.ws_deque;
+package org.codeus.consistent_hashing;
 
 import org.junit.jupiter.api.*;
 
