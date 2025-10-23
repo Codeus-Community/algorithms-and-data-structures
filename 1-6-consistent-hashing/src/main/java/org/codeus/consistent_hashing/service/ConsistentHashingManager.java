@@ -1,12 +1,15 @@
 package org.codeus.consistent_hashing.service;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.codeus.consistent_hashing.consistent_hashing.ConsistentHashing;
-import org.codeus.consistent_hashing.dto.*;
+import org.codeus.consistent_hashing.dto.AddNodeResponse;
+import org.codeus.consistent_hashing.dto.InitResponse;
+import org.codeus.consistent_hashing.dto.Product;
+import org.codeus.consistent_hashing.dto.RemoveNodeResponse;
 import org.codeus.consistent_hashing.util.ProductLoader;
 import org.codeus.consistent_hashing.util.StatisticsCollector;
 import org.springframework.stereotype.Service;
-
 
 import java.io.IOException;
 import java.util.List;
@@ -23,21 +26,17 @@ public class ConsistentHashingManager {
 
     public InitResponse initializeHashing(int nodeCount) {
         log.info("Initializing with {} nodes", nodeCount);
-
         try {
             List<Product> products = productLoader.loadFromJson();
 
-            consistentHashing = new ConsistentHashing<>(Product::getId);
-            consistentHashing.setNodeCount(nodeCount);
-            consistentHashing.addElements(products);
+            // TODO: Create a new instance of ConsistentHashing using Product::getId as key extractor
 
-            return InitResponse.builder()
-                    .message("Initialized with " + nodeCount + " nodes")
-                    .nodeCount(nodeCount)
-                    .totalProducts(consistentHashing.getTotalElements())
-                    .checkedElements(consistentHashing.getCheckedElements())
-                    .distribution(statisticsCollector.getDistribution(consistentHashing))
-                    .build();
+            // TODO: Initialize the ring with the given number of nodes (check ConsistentHashing for a method that configures node count).
+
+            // TODO: Add all elements to the cashing using the appropriate method from ConsistentHashing
+
+            // TODO: Return InitResponse with proper data from ConsistentHashing (node count, total elements, checked elements, and distribution)
+            return null;
 
         } catch (IOException e) {
             throw new RuntimeException("Failed to load products", e);
@@ -48,44 +47,33 @@ public class ConsistentHashingManager {
         validateInitialized();
         log.info("Adding new node");
 
-        Map<String, String> oldDistribution = consistentHashing.captureDistribution();
-        consistentHashing.addNode();
+        // TODO: Capture the current distribution before modification using ConsistentHashing
+        Map<String, String> oldDistribution;
 
-        List<NodeMovementSummary> movements = statisticsCollector.trackNodeMovements(consistentHashing, oldDistribution);
-        int moved = statisticsCollector.countMovedElements(movements);
+        // TODO: Use the method from ConsistentHashing to add a new node to the ring
 
-        log.info("Node added. Checked: {}, Moved: {}", consistentHashing.getCheckedElements(), moved);
+        // TODO: After assigning a value to 'oldDistribution', uncomment the following lines
+//        List<NodeMovementSummary> movements = statisticsCollector.trackNodeMovements(consistentHashing, oldDistribution);
+//        int moved = statisticsCollector.countMovedElements(movements);
 
-        return AddNodeResponse.builder()
-                .message("Node added successfully")
-                .nodeCount(consistentHashing.getNodeCount())
-                .checkedElements(consistentHashing.getCheckedElements())
-                .movedElements(moved)
-                .distribution(statisticsCollector.getDistribution(consistentHashing))
-                .movements(movements)
-                .build();
+        // TODO: Return AddNodeResponse with relevant data (node count, checked elements, moved elements, distribution, movements)
+        return null;
     }
 
     public RemoveNodeResponse removeNode(int nodeIndex) {
         validateInitialized();
         log.info("Removing node at index {}", nodeIndex);
+        // TODO: Capture the current distribution before removal using ConsistentHashing
+        Map<String, String> oldDistribution;
 
-        Map<String, String> oldDistribution = consistentHashing.captureDistribution();
-        consistentHashing.removeNodeByIndex(nodeIndex);
+        // TODO: Use the correct method from ConsistentHashing to remove a node by its index
 
-        List<NodeMovementSummary> movements = statisticsCollector.trackNodeMovements(consistentHashing, oldDistribution);
-        int moved = statisticsCollector.countMovedElements(movements);
+        // TODO: After assigning a value to 'oldDistribution', uncomment the following lines
+//        List<NodeMovementSummary> movements = statisticsCollector.trackNodeMovements(consistentHashing, oldDistribution);
+//        int moved = statisticsCollector.countMovedElements(movements);
 
-        log.info("Node removed. Checked: {}, Moved: {}", consistentHashing.getCheckedElements(), moved);
-
-        return RemoveNodeResponse.builder()
-                .message("Node removed successfully")
-                .nodeCount(consistentHashing.getNodeCount())
-                .checkedElements(consistentHashing.getCheckedElements())
-                .movedElements(moved)
-                .distribution(statisticsCollector.getDistribution(consistentHashing))
-                .movements(movements)
-                .build();
+        // TODO: Return RemoveNodeResponse with relevant data (node count, checked elements, moved elements, distribution, movements)
+        return null;
     }
 
     private void validateInitialized() {
