@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -29,6 +30,7 @@ public class GolfTournamentService {
 
     private final GolfTournamentRepository tournamentRepo;
     private final WriteBehindQueue writeBehindQueue;
+    private final CacheSorService cacheSorService;
     private final Random random = new Random();
 
     public GolfTournament addTournament(final GolfTournamentRequest request){
@@ -70,6 +72,13 @@ public class GolfTournamentService {
                 .filter(g -> g.getId().equals(updateScoreRequest.golferId()))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Golfer not found"));
+
+        Optional<GolferDto> cached = cacheSorService.getGolferFromCache(golfer.getId());
+
+        if(cached.isPresent()){
+            golfer.getHoleScores().clear();
+            golfer.getHoleScores().putAll(cached.get().holeScores());
+        }
 
         final int hole = updateScoreRequest.hole();
         final int score = updateScoreRequest.score();

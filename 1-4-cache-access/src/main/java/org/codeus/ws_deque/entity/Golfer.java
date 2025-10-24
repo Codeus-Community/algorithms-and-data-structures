@@ -1,9 +1,7 @@
 package org.codeus.ws_deque.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -14,7 +12,8 @@ import java.util.Map;
  **/
 @Entity
 @Table(name = "golfers")
-@Data
+@Getter @Setter
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 public class Golfer implements Serializable {
