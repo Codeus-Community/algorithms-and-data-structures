@@ -1,9 +1,7 @@
 package org.codeus.ws_deque.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -13,7 +11,8 @@ import java.util.Set;
  * @author yelyzavetalubenets
  **/
 @Entity
-@Data
+@Setter @Getter
+@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 public class GolfTournament implements Serializable {

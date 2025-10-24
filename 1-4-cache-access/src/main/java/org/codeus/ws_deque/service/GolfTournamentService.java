@@ -14,9 +14,11 @@ import org.codeus.ws_deque.repo.GolfTournamentRepository;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -29,6 +31,7 @@ public class GolfTournamentService {
 
     private final GolfTournamentRepository tournamentRepo;
     private final WriteBehindQueue writeBehindQueue;
+    private final CacheSorService cacheSorService;
     private final Random random = new Random();
 
     public GolfTournament addTournament(final GolfTournamentRequest request){
@@ -58,13 +61,20 @@ public class GolfTournamentService {
 
     // 🔵 WRITE-BEHIND (updating hole scores)
     @CachePut(value = "golfers", key = "#updateScoreRequest.golferId")
-    @Transactional(readOnly = true)
+    @Transactional(propagation = Propagation.SUPPORTS)
     public GolferDto updateGolferScore(final Long tournamentId, final UpdateScoreRequest updateScoreRequest) {
         GolfTournament tournament = getTournamentFromDb(tournamentId);
         Golfer golfer = tournament.getGolfers().stream()
                 .filter(g -> g.getId().equals(updateScoreRequest.golferId()))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Golfer not found"));
+
+        Optional<GolferDto> cached = cacheSorService.getGolferFromCache(golfer.getId());
+
+        if(cached.isPresent()){
+            golfer.getHoleScores().clear();
+            golfer.getHoleScores().putAll(cached.get().holeScores());
+        }
 
         final int hole = updateScoreRequest.hole();
         final int score = updateScoreRequest.score();
