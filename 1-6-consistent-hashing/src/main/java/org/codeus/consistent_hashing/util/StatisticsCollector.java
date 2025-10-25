@@ -1,5 +1,6 @@
 package org.codeus.consistent_hashing.util;
 import org.codeus.consistent_hashing.consistent_hashing.ConsistentHashing;
+import org.codeus.consistent_hashing.consistent_hashing.ConsistentHashingWithVirtualNodes;
 import org.codeus.consistent_hashing.dto.NodeMovementSummary;
 import org.codeus.consistent_hashing.dto.Product;
 import org.codeus.consistent_hashing.simple_hashing.SimpleHashing;
@@ -17,7 +18,15 @@ public class StatisticsCollector {
     public Map<String, Integer> getDistribution(SimpleHashing<Product> hashing) {
         return hashing.getDistribution();
     }
+    public Map<String, Integer> getDistribution(ConsistentHashingWithVirtualNodes<Product> hashing) {
+        return hashing.getDistribution();
+    }
 
+    public List<NodeMovementSummary> trackNodeMovements(ConsistentHashingWithVirtualNodes<Product> hashing,
+                                                        Map<String, String> oldDistribution) {
+        Map<String, String> currentDistribution = hashing.captureDistribution();
+        return calculateMovements(oldDistribution, currentDistribution);
+    }
     /**
      * Track movements between nodes with count (for ConsistentHashing)
      */
