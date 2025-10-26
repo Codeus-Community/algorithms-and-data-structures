@@ -11,5 +11,6 @@ of a set. False positive matches are possible, but false negatives are not
 resolve all TODOs in the classes:
 
 - `1-5-bloom-filter/src/main/java/org/codeus/bloomfilter/SimpleBloomFilter.java`
+- `1-5-bloom-filter/src/main/java/org/codeus/bloomfilter/SimpleCountingBloomFilterTest.java`
 
 Good luck! 🚀
