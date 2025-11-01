@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>JumpHash Demo Dashboard</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 24px;
+        color: #202124;
+      }
+      h1 {
+        margin-bottom: 8px;
+      }
+      #updatedAt {
+        color: #5f6368;
+        font-size: 0.9rem;
+        margin-bottom: 16px;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-bottom: 24px;
+      }
+      th, td {
+        border: 1px solid #dadce0;
+        padding: 8px 12px;
+        text-align: left;
+      }
+      th {
+        background: #f1f3f4;
+      }
+      .status-ok {
+        color: #0b8043;
+      }
+      .status-warn {
+        color: #d93025;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>JumpHash Event Router Demo</h1>
+    <div id="updatedAt">Loading metrics…</div>
+    <h2>Consumer Instances</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Instance</th>
+          <th>Processed</th>
+          <th>Lag</th>
+          <th>Dropped (unsafe)</th>
+          <th>Last Seen</th>
+        </tr>
+      </thead>
+      <tbody id="consumerBody"></tbody>
+    </table>
+    <h2>Producer Routing Metrics</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Instance</th>
+          <th>Tracked Keys</th>
+          <th>Keys Migrated</th>
+          <th>Migration %</th>
+          <th>Assignments Observed</th>
+          <th>Partitions</th>
+          <th>Partition Changes</th>
+          <th>Last Seen</th>
+        </tr>
+      </thead>
+      <tbody id="producerBody"></tbody>
+    </table>
+    <script>
+      const formatTime = (epochMillis) => {
+        if (!epochMillis) {
+          return "-";
+        }
+        const date = new Date(epochMillis);
+        return `${date.toLocaleTimeString()} (${date.toLocaleDateString()})`;
+      };
+
+      const formatPercent = (numerator, denominator) => {
+        if (!denominator || denominator === 0) {
+          return "0.00%";
+        }
+        return `${((numerator / denominator) * 100).toFixed(2)}%`;
+      };
+
+      const refresh = async () => {
+        try {
+          const response = await fetch("/api/stats");
+          if (!response.ok) {
+            throw new Error("Request failed");
+          }
+          const data = await response.json();
+          const consumerBody = document.getElementById("consumerBody");
+          consumerBody.innerHTML = "";
+          const consumerEntries = Object.entries(data.consumers || {});
+          consumerEntries.sort((a, b) => a[0].localeCompare(b[0]));
+
+          for (const [instanceId, stats] of consumerEntries) {
+            const row = document.createElement("tr");
+            const lagClass = stats.lag > 0 ? "status-warn" : "status-ok";
+            row.innerHTML = `
+              <td>${instanceId}</td>
+              <td>${stats.processed}</td>
+              <td class="${lagClass}">${stats.lag}</td>
+              <td>${stats.droppedOnRebalance ?? 0}</td>
+              <td>${formatTime(stats.lastSeen)}</td>
+            `;
+            consumerBody.appendChild(row);
+          }
+
+          const producerBody = document.getElementById("producerBody");
+          producerBody.innerHTML = "";
+          const producerEntries = Object.entries(data.producers || {});
+          producerEntries.sort((a, b) => a[0].localeCompare(b[0]));
+
+          for (const [instanceId, stats] of producerEntries) {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${instanceId}</td>
+              <td>${stats.trackedKeys}</td>
+              <td>${stats.keysMigrated}</td>
+              <td>${formatPercent(stats.keysMigrated, stats.trackedKeys)}</td>
+              <td>${stats.assignmentsObserved}</td>
+              <td>${stats.partitionCount}</td>
+              <td>${stats.partitionChanges}</td>
+              <td>${formatTime(stats.lastSeen)}</td>
+            `;
+            producerBody.appendChild(row);
+          }
+
+          const updatedAt = document.getElementById("updatedAt");
+          const hasData = consumerEntries.length || producerEntries.length;
+          updatedAt.textContent = hasData
+            ? `Updated at ${formatTime(data.updatedAt)}`
+            : "Waiting for metrics…";
+        } catch (err) {
+          document.getElementById("updatedAt").textContent =
+            "Failed to load stats. Is the dashboard connected to Kafka?";
+        }
+      };
+
+      refresh();
+      setInterval(refresh, 1000);
+    </script>
+  </body>
+</html>

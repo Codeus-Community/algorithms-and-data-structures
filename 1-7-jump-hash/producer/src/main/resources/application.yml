@@ -1,0 +1,29 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: producer-svc
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      properties:
+        partitioner.class: org.codeus.jumphash.producer.CustomPartitioner
+        metadata.max.age.ms: 1500
+
+app:
+  topic: demo.events
+  events-per-second: 300
+  user-pool-size: 5000
+  event-types:
+    - CLICK
+    - VIEW
+    - PURCHASE
+    - LOGIN
+    - LOGOUT
+  tick-interval-ms: 1000
+  stats-topic: demo.stats
+  stats-interval-ms: 1000
+  instance-id: producer-${server.port:8082}
