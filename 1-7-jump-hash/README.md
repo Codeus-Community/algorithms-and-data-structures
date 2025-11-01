@@ -68,13 +68,11 @@ Run all commands from the repository root folder `algorithms-and-data-structures
    - Reset topics to the baseline state (3 partitions for `demo.events`, 1 for `demo.stats`). Choose one:
      - Option A — delete and recreate topics (fast path):
        ```bash
-       # Delete topics if they exist (ignore errors)
        docker compose -f 1-7-jump-hash/docker-compose.kafka.yml exec kafka \
          sh -c "kafka-topics --delete --topic demo.events --bootstrap-server kafka:29092 || true"
        docker compose -f 1-7-jump-hash/docker-compose.kafka.yml exec kafka \
          sh -c "kafka-topics --delete --topic demo.stats --bootstrap-server kafka:29092 || true"
 
-       # Recreate with baseline partitioning
        docker compose -f 1-7-jump-hash/docker-compose.kafka.yml exec kafka \
          sh -c "kafka-topics --create --topic demo.events \
            --bootstrap-server kafka:29092 --partitions 3 --replication-factor 1"
@@ -86,7 +84,6 @@ Run all commands from the repository root folder `algorithms-and-data-structures
        ```bash
        docker compose -f 1-7-jump-hash/docker-compose.kafka.yml down -v
        docker compose -f 1-7-jump-hash/docker-compose.kafka.yml up -d
-       # Then (re)create topics as above
        docker compose -f 1-7-jump-hash/docker-compose.kafka.yml exec kafka \
          sh -c "kafka-topics --create --topic demo.events \
            --bootstrap-server kafka:29092 --partitions 3 --replication-factor 1"
