@@ -21,6 +21,7 @@ class PartitionerMigrationTest {
     private static final int OLD_PARTITIONS = 3;
     private static final int NEW_PARTITIONS = 4;
 
+    @Disabled
     @Test
     @DisplayName("CustomPartitioner with modulo hashing migrates many keys")
     void moduloRoutingMigratesManyKeys() {
@@ -38,7 +39,6 @@ class PartitionerMigrationTest {
                 .isGreaterThan(0.60);
     }
 
-    @Disabled("Enable after switching CustomPartitioner to Jump Hash")
     @Test
     @DisplayName("CustomPartitioner with Jump Hash keeps migrations low")
     void jumpHashKeepsMigrationsLow() {

@@ -1,5 +1,6 @@
 package org.codeus.jumphash.producer;
 
+import com.google.common.hash.Hashing;
 import org.apache.kafka.clients.producer.Partitioner;
 import org.apache.kafka.common.Cluster;
 import org.apache.kafka.common.PartitionInfo;
@@ -10,9 +11,8 @@ import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * Mimics Kafka's default murmur2/modulo routing so we can later swap in Jump Hash.
+ * Routes records with Jump Consistent Hashing while keeping Murmur2 as the fingerprint function.
  */
-// TODO: switch to Jump Hash by delegating to Hashing.consistentHash.
 public class CustomPartitioner implements Partitioner {
 
     @Override
@@ -34,7 +34,7 @@ public class CustomPartitioner implements Partitioner {
         }
 
         long hash = Utils.toPositive(Utils.murmur2(keyBytes));
-        return (int) (hash % partitionCount);
+        return Hashing.consistentHash(hash, partitionCount);
     }
 
     @Override
