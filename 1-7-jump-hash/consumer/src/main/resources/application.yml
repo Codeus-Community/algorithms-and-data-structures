@@ -1,0 +1,22 @@
+server:
+  port: ${SERVER_PORT:8091}
+
+spring:
+  application:
+    name: consumer-svc
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: demo.group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+
+app:
+  events-topic: demo.events
+  stats-topic: demo.stats
+  instance-id: ${HOSTNAME:local}-${server.port}
+  stats-interval-ms: 1000
+  unsafe-demo: false
+  processing-delay-ms: 0

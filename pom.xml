@@ -65,6 +65,7 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<inherited>false</inherited>
 				<configuration>
 					<excludes>
 						<exclude>
@@ -72,6 +73,7 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
+					<skip>true</skip>
 				</configuration>
 			</plugin>
 		</plugins>
