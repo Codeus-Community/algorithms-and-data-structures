@@ -7,5 +7,5 @@ It just sequentially adds each element inside array.
 
 This branch provides already completed solution
 
-The presentation resources: https://excalidraw.com/#json=s6-LP95H3bmZ1jLkzD4l2,e6hjjIsi4UiXDLOFZEf3ew
+The presentation resources: https://excalidraw.com/#json=yBU2LzMivKIRHdjIENx3e,jxrbpk0MnWLc-5_zXw7Afw
 
