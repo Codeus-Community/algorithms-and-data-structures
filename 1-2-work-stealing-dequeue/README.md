@@ -15,5 +15,5 @@ task2 = new Task(mid, end)
 
 Already provided solution is provided in branch `1-2-work-stealing-deque-completed`.
 
-The presentation resources: https://excalidraw.com/#json=s6-LP95H3bmZ1jLkzD4l2,e6hjjIsi4UiXDLOFZEf3ew
+The presentation resources: https://excalidraw.com/#json=yBU2LzMivKIRHdjIENx3e,jxrbpk0MnWLc-5_zXw7Afw
 
